@@ -1,41 +1,20 @@
-version: '1'
 services:
   filebeat:
-    image: docker.elastic.co/beats/filebeat:7.14.0
+    image: docker.elastic.co/beats/filebeat:8.8.0
     volumes:
       - ./config/filebeat.yml:/usr/share/filebeat/filebeat.yml
-      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - ./data/log:/var/log
     networks:
-      - logging
+      - ams
 
   logstash:
-    image: docker.elastic.co/logstash/logstash:7.14.0
+    image: docker.elastic.co/logstash/logstash:8.8.0
     volumes:
       - ./config/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    ports:
+      - 5044:5044
     networks:
-      - logging
-
-  # elasticsearch:
-  #   image: docker.elastic.co/elasticsearch/elasticsearch:7.14.0
-  #   environment:
-  #     - discovery.type=single-node
-  #   volumes:
-  #     - elasticsearch-data:/usr/share/elasticsearch/data
-  #   ports:
-  #     - 9200:9200
-  #   networks:
-  #     - logging
-
-  # kibana:
-  #   image: docker.elastic.co/kibana/kibana:7.14.0
-  #   ports:
-  #     - 5601:5601
-  #   networks:
-  #     - logging
+      - ams
 
 networks:
-  logging:
-
-volumes:
-  elasticsearch-data:
-    driver: local
+  ams:

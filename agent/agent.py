@@ -2,6 +2,7 @@ import os
 import subprocess
 import configparser
 import multiprocessing
+import logging
 
 PROCESS_LIST = []
 
@@ -15,19 +16,19 @@ def extract_logcat(buffer_name, log_file_path):
             while True:
                 # adb logcat 출력을 읽음
                 output = adb_process.stdout.readline().decode().strip()
-                
+                # logging.INFO(output)
                 if output:
                     # 로그를 파일에 기록
                     file.write(output + '\n')
                     file.flush()
-            
+                
         except KeyboardInterrupt:
-
             os.remove(log_file_path)
             adb_process.terminate()
+            # logging.DEBUG("Process Terminate")
+        # except OSError:
+            # logging.WARN("File cannot be deleted")
 
-        except OSError:
-            print(log_file_path, "can't be deleted")
     return
 
 def create_directory_if_not_exists(path):
@@ -60,6 +61,8 @@ if __name__ == "__main__":
         log_root_dict["crash"] = os.path.join(log_root, config.get('adb', 'crash_log_dir'))
         log_root_dict["system"] = os.path.join(log_root, config.get('adb', 'system_log_dir'))
         
+        device_name = os.popen('adb devices')
+        # logging.INFO("Device Name :", str(device_name[0]))
         for buffer, log_path in log_root_dict.items():
             process = multiprocessing.Process(target=extract_logcat, args=(buffer, log_path))
             process.start()
