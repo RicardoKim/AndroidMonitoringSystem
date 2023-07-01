@@ -2,6 +2,11 @@
 
 The Android Monitoring System is a monitoring solution that captures and analyzes logcat logs from Android devices. It provides real-time log monitoring, log storage, and analysis capabilities to help track and diagnose issues in Android applications.
 
+## Purpose per Version
+
+### v1 : Make monitoring system for process info in android device
+### v2 : Make monitoring system using android logcat
+
 ----
 
 ## Feature in Progress
@@ -19,7 +24,7 @@ Description: Implement real-time log stack system from user phone.
 - streams data to Logstash using Filebeat
 
 > In progress 
-- Implementing the log parsing and filtering logic in logstash.
+- Get Process info from Android Phone
 
 
 ----
