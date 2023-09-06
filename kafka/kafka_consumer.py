@@ -3,6 +3,7 @@ from json import loads
 
 android_task_consumer = KafkaConsumer(
     'Android_Task',
+    api_version = (0,11,5),
     bootstrap_servers=['localhost:29092'],
     auto_offset_reset = 'earliest',
     enable_auto_commit=True,

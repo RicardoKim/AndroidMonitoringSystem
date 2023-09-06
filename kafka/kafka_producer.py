@@ -9,6 +9,7 @@ from json import dumps
 
 producer = KafkaProducer(
     acks = 0,
+    api_version = (0,11,5),
     client_id = 'test',
     compression_type = 'gzip',
     bootstrap_servers=['localhost:29092'],
@@ -18,6 +19,7 @@ producer = KafkaProducer(
 
 task_producer = KafkaProducer(
     acks = 0,
+    api_version = (0,11,5),
     client_id = 'Android_Task',
     compression_type = 'gzip',
     bootstrap_servers=['localhost:29092'],
@@ -27,6 +29,7 @@ task_producer = KafkaProducer(
 
 mem_producer = KafkaProducer(
     acks = 0,
+    api_version = (0,11,5),
     client_id = 'Android_Mem',
     compression_type = 'gzip',
     bootstrap_servers=['localhost:29092'],
@@ -36,6 +39,7 @@ mem_producer = KafkaProducer(
 
 swap_producer = KafkaProducer(
     acks = 0,
+    api_version = (0,11,5),
     client_id = 'Android_Swap',
     compression_type = 'gzip',
     bootstrap_servers=['localhost:29092'],
@@ -45,6 +49,7 @@ swap_producer = KafkaProducer(
 
 process_producer = KafkaProducer(
     acks = 0,
+    api_version = (0,11,5),
     client_id = 'Android_Process',
     compression_type = 'gzip',
     bootstrap_servers=['localhost:29092'],
