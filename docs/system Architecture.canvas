@@ -1,0 +1,41 @@
+{
+	"nodes":[
+		{"type":"text","text":"# Kafka Producer","id":"aea166a931e82a45","x":120,"y":-560,"width":320,"height":104},
+		{"type":"text","text":"# Kafka Producer","id":"b858c73f5fa96270","x":120,"y":-276,"width":320,"height":94},
+		{"type":"text","text":"# Kafka Producer","id":"c035ed900610700d","x":120,"y":3,"width":320,"height":94},
+		{"type":"text","text":"# Kafka Broker","id":"4378ea3b79379a45","x":600,"y":-732,"width":280,"height":877},
+		{"type":"text","text":"# Kafka Topic","id":"579e6a3af81d0fa8","x":600,"y":-560,"width":280,"height":104},
+		{"type":"text","text":"# Kafka Topic","id":"dcda09c999ce983e","x":600,"y":-281,"width":280,"height":104},
+		{"type":"text","text":"# Kafka Topic","id":"8ffb8ae85aa6c17a","x":600,"y":3,"width":280,"height":104},
+		{"type":"text","text":"# Spark Session","id":"f04a137653253eff","x":962,"y":-549,"width":278,"height":82},
+		{"type":"text","text":"# Spark Session","id":"11ad97c482df0246","x":962,"y":14,"width":278,"height":82},
+		{"type":"file","file":"docs/image/Pasted image 20230902141528.png","id":"07004ccd76f5c051","x":1418,"y":-361,"width":400,"height":252},
+		{"type":"file","file":"docs/image/Pasted image 20230902141609.png","id":"b08eda29142e78ed","x":1920,"y":-289,"width":401,"height":108},
+		{"type":"file","file":"docs/image/Pasted image 20230902142519.png","id":"847a7074fe6d23f8","x":2520,"y":-435,"width":400,"height":400},
+		{"type":"text","text":"# Spark Session","id":"2fc0b38e27c0231f","x":962,"y":-270,"width":278,"height":82},
+		{"type":"text","text":"# 문자열 처리","id":"6c09b91052c8b65c","x":990,"y":200,"width":828,"height":80,"color":"1"},
+		{"type":"text","text":"# 데이터 마트","id":"4e724f9da52fccef","x":1920,"y":200,"width":401,"height":80,"color":"1"},
+		{"type":"text","text":"# 웹 소켓","id":"8757f78b261688bf","x":2319,"y":-401,"width":201,"height":108,"color":"1"},
+		{"type":"text","text":"# 모니터링 ","id":"f65cace2498fde69","x":2960,"y":-296,"width":201,"height":108,"color":"1"},
+		{"type":"text","text":"# 로그 수집기","id":"fa346b9b22a29133","x":112,"y":200,"width":768,"height":80,"color":"1"},
+		{"id":"5149aa1d91b8aa6a","type":"text","text":"## 300Line/sec","x":-200,"y":210,"width":250,"height":60},
+		{"type":"file","file":"docs/image/Pasted image 20230902141143.png","id":"406e0f39f3a417e5","x":-600,"y":-335,"width":400,"height":349,"color":"#ffffff"},
+		{"type":"file","file":"docs/image/Pasted image 20230902141338.png","id":"a4aa0c19bfb3a54a","x":304,"y":280,"width":384,"height":192}
+	],
+	"edges":[
+		{"id":"852f6eb08be948b8","fromNode":"406e0f39f3a417e5","fromSide":"right","toNode":"aea166a931e82a45","toSide":"left","label":"Stream Data\n\n"},
+		{"id":"0131b7fac80a1a63","fromNode":"07004ccd76f5c051","fromSide":"right","toNode":"b08eda29142e78ed","toSide":"left"},
+		{"id":"2dac528a69f30501","fromNode":"b08eda29142e78ed","fromSide":"right","toNode":"847a7074fe6d23f8","toSide":"left"},
+		{"id":"05f2f9311532d585","fromNode":"406e0f39f3a417e5","fromSide":"right","toNode":"b858c73f5fa96270","toSide":"left"},
+		{"id":"3e3976d59eb6a92a","fromNode":"aea166a931e82a45","fromSide":"right","toNode":"579e6a3af81d0fa8","toSide":"left"},
+		{"id":"00b66f23948f69b8","fromNode":"406e0f39f3a417e5","fromSide":"right","toNode":"c035ed900610700d","toSide":"left"},
+		{"id":"825b8618efe9f615","fromNode":"b858c73f5fa96270","fromSide":"right","toNode":"dcda09c999ce983e","toSide":"left"},
+		{"id":"3a7e59cd073bcfd0","fromNode":"c035ed900610700d","fromSide":"right","toNode":"8ffb8ae85aa6c17a","toSide":"left"},
+		{"id":"17dce4d12ce2e038","fromNode":"579e6a3af81d0fa8","fromSide":"right","toNode":"f04a137653253eff","toSide":"left"},
+		{"id":"9b9705b94228263b","fromNode":"f04a137653253eff","fromSide":"right","toNode":"07004ccd76f5c051","toSide":"left"},
+		{"id":"7648395c85b60dfa","fromNode":"2fc0b38e27c0231f","fromSide":"right","toNode":"07004ccd76f5c051","toSide":"left"},
+		{"id":"95812a1ce97c3d67","fromNode":"11ad97c482df0246","fromSide":"right","toNode":"07004ccd76f5c051","toSide":"left"},
+		{"id":"f0405493c462670d","fromNode":"dcda09c999ce983e","fromSide":"right","toNode":"2fc0b38e27c0231f","toSide":"left"},
+		{"id":"3c3d7ab2c1fc94ed","fromNode":"8ffb8ae85aa6c17a","fromSide":"right","toNode":"11ad97c482df0246","toSide":"left"}
+	]
+}
