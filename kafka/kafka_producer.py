@@ -52,7 +52,7 @@ process_producer = KafkaProducer(
     api_version = (0,11,5),
     client_id = 'Android_Process',
     compression_type = 'gzip',
-    bootstrap_servers=['localhost:29092'],
+    bootstrap_servers=['kafka:29092'],
     key_serializer = None,
     value_serializer = lambda x: dumps(x).encode('utf-8')
 )
@@ -66,11 +66,16 @@ def extract_top():
         if log != last_log:
             last_section = section
             prefix = log
+            print(log)
             if "Task" in prefix :
                 section = "Task"
-                task_producer.send('Android_Task', {
-                    section : log
-                })
+                print(log)
+                task_producer.send(
+                    'Android_Task', 
+                        value = {
+                            "value" : log
+                        }
+                    )
             elif "Mem" in prefix:
                 section = "Memory"
                 task_producer.send('Android_Mem', {

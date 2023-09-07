@@ -24,37 +24,49 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
-  
-  spark-master:
-    image: docker.io/bitnami/spark:3.3
+
+  spark:
+    image: docker.io/bitnami/spark:3.4
+    environment:
+      - SPARK_MODE=master
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+      - SPARK_USER=spark
     ports:
-      - "9090:8080"
-      - "7077:7077"
+      - '8080:8080'
+      - '7077:7077'
+
+  spark-worker-1:
+    image: docker.io/bitnami/spark:3.4
     volumes:
-       - ./apps:/opt/spark-apps
-       - ./data:/opt/spark-data
+       - ./spark:/opt/spark-script
     environment:
-      - SPARK_LOCAL_IP=spark-master
-      - SPARK_WORKLOAD=master
-  
-  spark-worker-a:
-    image: docker.io/bitnami/spark:3.3
-    ports:
-      - "9091:8080"
-      - "7000:7000"
-    depends_on:
-      - spark-master
-    environment:
-      - SPARK_MASTER=spark://spark-master:7077
-      - SPARK_WORKER_CORES=1
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark:7077
       - SPARK_WORKER_MEMORY=1G
-      - SPARK_DRIVER_MEMORY=1G
-      - SPARK_EXECUTOR_MEMORY=1G
-      - SPARK_WORKLOAD=worker
-      - SPARK_LOCAL_IP=spark-worker-a
+      - SPARK_WORKER_CORES=1
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+      - SPARK_USER=spark
+    command: bash -c "spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.4.1 --master spark://spark:7077 /opt/spark-script/spark_consumer.py"
+
+  spark-worker-2:
+    image: docker.io/bitnami/spark:3.4
     volumes:
-       - ./spark:/opt/spark-apps
-       - ./data:/opt/spark-data
-    command: bash -c "spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.4.1, --master spark://spark-master:7077 /opt/spark-apps/spark_consumer.py"
+       - ./spark:/opt/spark-script
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark:7077
+      - SPARK_WORKER_MEMORY=1G
+      - SPARK_WORKER_CORES=1
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+      - SPARK_USER=spark
