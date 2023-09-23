@@ -6,4 +6,12 @@
 
 <img src="./docs/system Architecture.png"></img>
 
-## Develop...
+## 1차 프로토타입
+- 안드로이드 기기의 Process 정보 처리
+
+![ezgif-4-83babf6050](https://github.com/RicardoKim/AndroidMonitoringSystem/assets/49342604/b2977ce5-73a9-4260-8107-e5e0310c9cc3)
+
+## Todo
+- [ ] cpu, ram 등 resource 관련 정보 받아오기
+- [ ] Log 정보로 에러가 나는 앱 정보 받아오기
+- [ ] Log 정보로 현재 구동되는 앱 정보 받아오기
