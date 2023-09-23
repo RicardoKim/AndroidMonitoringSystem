@@ -84,6 +84,7 @@ def extract_top():
     adb_process = subprocess.Popen(['adb', 'shell', 'top', '-m', '10'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     while True:
         log = adb_process.stdout.readline().decode().strip()
+        print(log)
         if "Task" in log :
             parsed_data = parse_android_top_output(log)
             task_producer.send(

@@ -14,7 +14,6 @@ interface HomeProps {
 const Home: FC<HomeProps> = () => {
   const [received, setReceived] = useState<boolean>(false);
   const [processData, setProcessData] = useState<ProcessTableData>();
-  
 
   useEffect(() => {
     const socket = new WebSocket('ws://localhost:8000/handler');
@@ -45,15 +44,12 @@ const Home: FC<HomeProps> = () => {
   
 
   return (
-    <div>
-      <main className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}>
-          <div className = 'flex-col'>
-              <div className = 'pb-2'>{'System Process Info'}</div>
-              {received ? <TableComponent data={processData!} /> : <div className='text-2xl'>Loading.... </div>}
-          </div>
-        </main>
-    </div>
-
+    <main className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}>
+      <div className = 'flex-col'>
+          <div className = 'pb-2'>{'System Process Info'}</div>
+          {received ? <TableComponent data={processData!} /> : <div className='text-2xl'>Loading.... </div>}
+      </div>
+    </main>
   );
 };
 
