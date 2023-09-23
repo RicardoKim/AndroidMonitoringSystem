@@ -9,7 +9,8 @@
 ## 1차 프로토타입
 - 안드로이드 기기의 Process 정보 처리
 
-![ezgif-4-83babf6050](https://github.com/RicardoKim/AndroidMonitoringSystem/assets/49342604/b2977ce5-73a9-4260-8107-e5e0310c9cc3)
+![ezgif-4-83babf6050](https://github.com/RicardoKim/AndroidMonitoringSystem/assets/49342604/96796012-8227-4a40-833c-f7f831e1f1e3)
+
 
 ## Todo
 - [ ] cpu, ram 등 resource 관련 정보 받아오기
