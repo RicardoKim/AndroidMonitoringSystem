@@ -4,7 +4,7 @@ from pyspark.sql.types import StructType, StructField, IntegerType
 from pymongo import MongoClient
 
 def write_to_mongo(df, epoch_id):
-    mongo_client = MongoClient('mongodb://root:1234@mongodb:27017/')  # Docker Compose 서비스 이름과 포트를 사용하여 MongoDB에 연결합니다.
+    mongo_client = MongoClient('mongodb://root:1234@mongodb1:27017')  # Docker Compose 서비스 이름과 포트를 사용하여 MongoDB에 연결합니다.
     db = mongo_client.AndroidLogDataMart  # Database를 선택합니다.
     collection = db.AndroidResourceMonitoring  # Collection을 선택합니다.
     
