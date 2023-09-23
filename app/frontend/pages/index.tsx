@@ -1,28 +1,20 @@
 import Head from 'next/head';
 import { useEffect, useState, FC } from 'react';
+import { Inter } from 'next/font/google'
+import { TableComponent } from '@/components/table';
+import { ProcessTableData } from '@/types/types';
+
+const inter = Inter({ subsets: ['latin'] })
 
 interface HomeProps {
   data: any;
   title?: string;
 }
 
-export async function getServerSideProps() {
-  try {
-    const response = await fetch('http://localhost:8000/handler-initial-data');
-    if (!response.ok) {
-      throw new Error('Network response was not ok ' + response.statusText);
-    }
-    const initialData = await response.json();
-    console.log(initialData)
-    return { props: { data: initialData } };
-  } catch (error) {
-    console.error('Fetch error:', error);
-    return { props: { data: null } };
-  }
-}
-
-const Home: FC<HomeProps> = ({ data, title = 'Untitled Document' }) => {
-  const [stateData, setData] = useState(data);
+const Home: FC<HomeProps> = () => {
+  const [received, setReceived] = useState<boolean>(false);
+  const [processData, setProcessData] = useState<ProcessTableData>();
+  
 
   useEffect(() => {
     const socket = new WebSocket('ws://localhost:8000/handler');
@@ -34,7 +26,8 @@ const Home: FC<HomeProps> = ({ data, title = 'Untitled Document' }) => {
     socket.onmessage = (event) => {
       console.log(event)
       const data = JSON.parse(event.data);
-      setData(data);
+      setProcessData(data);
+      setReceived(true);
     };
   
     socket.onerror = (error) => {
@@ -53,17 +46,14 @@ const Home: FC<HomeProps> = ({ data, title = 'Untitled Document' }) => {
 
   return (
     <div>
-      <Head>
-        <title>OSS Docs</title>
-        <meta name="description" content="Fast like SSR, Powerful like WebSockets" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <main>
-        <h1>{title}</h1>
-        <div>Data is: {JSON.stringify(stateData)}</div>
-      </main>
+      <main className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}>
+          <div className = 'flex-col'>
+              <div className = 'pb-2'>{'System Process Info'}</div>
+              {received ? <TableComponent data={processData!} /> : <div className='text-2xl'>Loading.... </div>}
+          </div>
+        </main>
     </div>
+
   );
 };
 
