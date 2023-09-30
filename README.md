@@ -19,6 +19,6 @@
 
 
 ## Todo
-- [ ] cpu, ram 등 resource 관련 정보 받아오기
+- [x] cpu, ram 등 resource 관련 정보 받아오기
 - [ ] Log 정보로 에러가 나는 앱 정보 받아오기
 - [ ] Log 정보로 현재 구동되는 앱 정보 받아오기
