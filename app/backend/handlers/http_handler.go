@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+
+	"github.com/RicardoKim/AndroidMonitoringSystem.com/AndroidMonitoringSystem/database"
 )
 
 func MainHandler(rw http.ResponseWriter, req *http.Request) {
@@ -20,8 +22,10 @@ func MainHandler(rw http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		ctx := context.Background()
-		go watchCollection(ctx, conn)
+		resource_ctx := context.Background()
+		go database.WatchAndroidResourceMonitoringCollection(resource_ctx, conn)
+		memory_ctx := context.Background()
+		go database.WatchAndroidMemoryMonitoringCollection(memory_ctx, conn)
 		return
 	}
 

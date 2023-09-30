@@ -1,8 +1,8 @@
 import Head from 'next/head';
 import { useEffect, useState, FC } from 'react';
 import { Inter } from 'next/font/google'
-import { TableComponent } from '@/components/table';
-import { ProcessTableData } from '@/types/types';
+import { ProcessTableComponent, MemoryTableComponent } from '@/components/table';
+import { ProcessDataType, MemoryDataType } from '@/types/types';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -12,8 +12,10 @@ interface HomeProps {
 }
 
 const Home: FC<HomeProps> = () => {
-  const [received, setReceived] = useState<boolean>(false);
-  const [processData, setProcessData] = useState<ProcessTableData>();
+  const [processDatareceived, setProcessDataReceived] = useState<boolean>(false);
+  const [memoryDatareceived, setMemoryDataReceived] = useState<boolean>(false);
+  const [processData, setProcessData] = useState<ProcessDataType>();
+  const [memoryData, setMemoryData] = useState<MemoryDataType>()
 
   useEffect(() => {
     const socket = new WebSocket('ws://localhost:8000/handler');
@@ -25,8 +27,14 @@ const Home: FC<HomeProps> = () => {
     socket.onmessage = (event) => {
       console.log(event)
       const data = JSON.parse(event.data);
-      setProcessData(data);
-      setReceived(true);
+      // console.log(data)
+      if('process_info' in data){
+        setProcessData(data['process_info']);
+        setProcessDataReceived(true);
+      }else if('memory_info' in data){
+        setMemoryData(data['memory_info']);
+        setMemoryDataReceived(true)
+      }
     };
   
     socket.onerror = (error) => {
@@ -44,10 +52,14 @@ const Home: FC<HomeProps> = () => {
   
 
   return (
-    <main className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}>
+    <main className={`flex-col space-y-4 min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}>
       <div className = 'flex-col'>
           <div className = 'pb-2'>{'System Process Info'}</div>
-          {received ? <TableComponent data={processData!} /> : <div className='text-2xl'>Loading.... </div>}
+          {processDatareceived ? <ProcessTableComponent data={processData!} /> : <div className='text-2xl'>Loading.... </div>}
+      </div>
+      <div className = 'flex-col'>
+          <div className = 'pb-2'>{'System Memory Info'}</div>
+          {processDatareceived ? <MemoryTableComponent data={memoryData!} /> : <div className='text-2xl'>Loading.... </div>}
       </div>
     </main>
   );

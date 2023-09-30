@@ -1,6 +1,5 @@
-# app/server/Dockerfile
-
-FROM golang:1.17
+# Build stage
+FROM golang:1.17 AS builder
 
 WORKDIR /app
 
@@ -9,6 +8,13 @@ RUN go mod download
 
 COPY . .
 RUN go build -o main .
+
+# Run stage
+FROM debian:buster-slim
+
+WORKDIR /app
+
+COPY --from=builder /app/main /app/main
 
 EXPOSE 8000
 

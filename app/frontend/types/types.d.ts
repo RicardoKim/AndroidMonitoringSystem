@@ -1,5 +1,5 @@
 // types.d.ts
-export interface ProcessTableData {
+export interface ProcessDataType {
     _id: {
       _data: string;
     };
@@ -25,4 +25,30 @@ export interface ProcessTableData {
     operationType: string;
     wallTime: string;
   }
-  
+
+  // types.d.ts
+export interface MemoryDataType {
+  _id: {
+    _data: string;
+  };
+  clusterTime: {
+    T: number;
+    I: number;
+  };
+  documentKey: {
+    _id: string;
+  };
+  fullDocument: {
+    Total: number;
+    Used: number;
+    Free: number;
+  };
+  ns: {
+    coll: string;
+    db: string;
+  };
+  operationType: string;
+  wallTime: string;
+}
+
+
