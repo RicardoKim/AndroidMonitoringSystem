@@ -9,7 +9,7 @@
 ## 1차 프로토타입
 - 안드로이드 기기의 Process 정보 처리
 
-![ezgif-4-83babf6050](https://github.com/RicardoKim/AndroidMonitoringSystem/assets/49342604/96796012-8227-4a40-833c-f7f831e1f1e3)
+![프로토타입2](https://github.com/RicardoKim/AndroidMonitoringSystem/assets/49342604/21ad3d78-c936-4376-88af-15ee447060ed)
 
 
 ## Todo
