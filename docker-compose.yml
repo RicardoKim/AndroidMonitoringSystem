@@ -46,6 +46,7 @@ services:
       - SPARK_SSL_ENABLED=no
       - SPARK_USER=spark
     ports:
+      - '8080:8080'
       - '7077:7077'
     networks:
       - app_network
@@ -57,8 +58,8 @@ services:
     environment:
       - SPARK_MODE=worker
       - SPARK_MASTER_URL=spark://spark:7077
-      - SPARK_WORKER_MEMORY=1G
-      - SPARK_WORKER_CORES=1
+      - SPARK_WORKER_MEMORY=4G
+      - SPARK_WORKER_CORES=20
       - SPARK_RPC_AUTHENTICATION_ENABLED=no
       - SPARK_RPC_ENCRYPTION_ENABLED=no
       - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
@@ -67,7 +68,7 @@ services:
     command: >
       bash -c "
         pip install pymongo &&
-        spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.4.1 --master spark://spark:7077 /opt/spark-script/spark_consumer.py
+        spark-submit --executor-cores 4 --executor-memory 1g --num-executors 1 --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.4.1 --master local[2] /opt/spark-script/spark_consumer.py
       "
     networks:
       - app_network
@@ -79,13 +80,18 @@ services:
     environment:
       - SPARK_MODE=worker
       - SPARK_MASTER_URL=spark://spark:7077
-      - SPARK_WORKER_MEMORY=1G
-      - SPARK_WORKER_CORES=1
+      - SPARK_WORKER_MEMORY=4G
+      - SPARK_WORKER_CORES=20
       - SPARK_RPC_AUTHENTICATION_ENABLED=no
       - SPARK_RPC_ENCRYPTION_ENABLED=no
       - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
       - SPARK_SSL_ENABLED=no
       - SPARK_USER=spark
+    command: >
+      bash -c "
+        pip install pymongo &&
+        spark-submit --executor-cores 4 --executor-memory 1g --num-executors 1 --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.4.1 --master local[2] /opt/spark-script/spark_memory_consumer.py
+      "
     networks:
       - app_network
 
