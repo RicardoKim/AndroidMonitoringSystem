@@ -8,6 +8,7 @@
 
 ## 1차 프로토타입
 - 안드로이드 기기의 Process 정보 처리
+
 ![ezgif-4-83babf6050](https://github.com/RicardoKim/AndroidMonitoringSystem/assets/49342604/9ce6a38b-18b2-4a1f-affa-9efc6aa02b9b)
 
 
