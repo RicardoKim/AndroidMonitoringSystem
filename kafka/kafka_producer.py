@@ -3,6 +3,7 @@
 #3. 토픽에 adb로 읽은 정보를 보내게 된다.
 import subprocess
 import re
+import threading
 
 from kafka import KafkaProducer
 from json import dumps
@@ -88,26 +89,6 @@ def parse_memory_line(log):
         }
     return 
 
-# def parse_swap_line(log):
-#     pattern = r"Swap:\s+(\d+)K total,\s+(\d+)K used,\s+(\d+)K free"
-#     matches = re.findall(pattern, log)
-
-#     # 추출된 값을 GB 단위로 변환 및 딕셔너리 생성
-#     def kb_to_gb(kb):
-#         return kb / 1024 / 1024
-
-#     result = {}
-
-#     for match in matches:
-#         total, used, free = match
-#         total, used, free = map(kb_to_gb, map(int, [total, used, free]))
-#         result['Swap'] = {
-#             "Total": f"{total:.2f} GB",
-#             "Used": f"{used:.2f} GB",
-#             "Free": f"{free:.2f} GB"
-#         }
-#     return result
-
 def extract_top():
     adb_process = subprocess.Popen(['adb', 'shell', 'top', '-m', '20'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     while True:
@@ -128,16 +109,13 @@ def extract_top():
                     'Android_Memory',
                     value = parsed_data
                 )
-        # elif "Swap" in log:
-        #     parsed_data = parse_memory_line(log)
-        #     swap_producer.send(
-        #         'Android_Swap',
-        #         value = parsed_data
-        #     )
         
 
 if __name__ == "__main__":
-    extract_top()
-
+    try:
+        top_thread = threading.Thread(target=extract_top)
+        top_thread.start()
+    except:
+        top_thread.join()
 
     

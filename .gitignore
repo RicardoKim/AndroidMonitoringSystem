@@ -1,4 +1,6 @@
 data/*
 .apps/
 .obsidian
-.mongo/
+mongo/mongodb1/
+mongo/mongodb2/
+mongo/mongodb3/
