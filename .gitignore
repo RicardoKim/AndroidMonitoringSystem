@@ -4,3 +4,4 @@ data/*
 mongo/mongodb1/
 mongo/mongodb2/
 mongo/mongodb3/
+mongo/mongodb.key
