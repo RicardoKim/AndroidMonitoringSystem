@@ -38,10 +38,10 @@ mem_producer = KafkaProducer(
     value_serializer = lambda x: dumps(x).encode('utf-8')
 )
 
-swap_producer = KafkaProducer(
+error_logcat_producer = KafkaProducer(
     acks = 0,
     api_version = (0,11,5),
-    client_id = 'Android_Swap',
+    client_id = 'Android_Error_Log',
     compression_type = 'gzip',
     bootstrap_servers=['localhost:29092'],
     key_serializer = None,
@@ -90,32 +90,42 @@ def parse_memory_line(log):
     return 
 
 def extract_top():
+    print("Extract Top Begin")
     adb_process = subprocess.Popen(['adb', 'shell', 'top', '-m', '20'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     while True:
         log = adb_process.stdout.readline().decode().strip()
-        # print(log)
         if "Task" in log :
             parsed_data = parse_android_process_info(log)
-            print(parsed_data)
             process_producer.send(
                 'Android_Process', 
                 value=parsed_data
                 )
         elif "Mem" in log:
             parsed_data = parse_memory_line(log)
-            print(parsed_data)
             if parsed_data:
                 mem_producer.send(
                     'Android_Memory',
                     value = parsed_data
                 )
-        
+
+def extract_error_logcat():
+    print('Extract Error Log Begin')
+    adb_process = subprocess.Popen(['adb', 'logcat', '*:E'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    while True:
+        log = adb_process.stdout.readline().decode().strip()
+        error_logcat_producer.send(
+            'Android_Error_Log',
+            value = log
+        )
 
 if __name__ == "__main__":
     try:
         top_thread = threading.Thread(target=extract_top)
+        error_logcat_thread = threading.Thread(target=extract_error_logcat)
+        error_logcat_thread.start()
         top_thread.start()
     except:
         top_thread.join()
+        error_logcat_thread.join()
 
     
