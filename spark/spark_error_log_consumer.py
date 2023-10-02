@@ -27,16 +27,18 @@ memory_kafka_params = {
 # 스트리밍 데이터를 읽어옵니다.
 raw_stream = spark.readStream.format("kafka").options(**memory_kafka_params).load()
 
-parsed_stream = raw_stream.selectExpr("CAST(value AS STRING) as value") \
-    .withColumn("date", regexp_extract("value", r"(\d{2}-\d{2})", 1)) \
-    .withColumn("time", regexp_extract("value", r"(\d{2}:\d{2}:\d{2}.\d{3})", 1)) \
-    .withColumn("error_info", regexp_extract("value", r"E (\S+:\s.*)", 1))
+log_pattern = r"(\d{2}-\d{2}) (\d{2}:\d{2}:\d{2}\.\d{3})\s+\d+\s+\d+\s+E (\w+):\s+(.*)"
 
-# 필요한 필드만 선택하여 구조를 변경합니다.
-transformed_stream = parsed_stream.select("date", "time", "error_info")
+# 정규표현식을 사용하여 로그를 파싱합니다.
+parsed_stream = raw_stream.select(
+    regexp_extract(col("value").cast("string"), log_pattern, 1).alias("date"),
+    regexp_extract(col("value").cast("string"), log_pattern, 2).alias("time"),
+    regexp_extract(col("value").cast("string"), log_pattern, 3).alias("Error"),
+    regexp_extract(col("value").cast("string"), log_pattern, 4).alias("Error Content")
+)
 
 # 데이터를 출력하거나 원하는 작업을 수행합니다.
-query = transformed_stream.writeStream \
+query = parsed_stream.writeStream \
     .outputMode("append") \
     .foreachBatch(write_to_mongo) \
     .start()
