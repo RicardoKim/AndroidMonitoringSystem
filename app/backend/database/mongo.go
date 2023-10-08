@@ -53,7 +53,7 @@ func WatchAndroidResourceMonitoringCollection(ctx context.Context, conn *websock
 			return
 		}
 		wrappedDoc := map[string]interface{}{
-			"process_info": changeDoc,
+			"resource_info": changeDoc,
 		}
 		changeJSON, err := json.Marshal(wrappedDoc)
 		if err != nil {
@@ -74,7 +74,7 @@ func WatchAndroidMemoryMonitoringCollection(ctx context.Context, conn *websocket
 	defer client.Disconnect(ctx)
 
 	database := client.Database("AndroidLogDataMart")
-	collection := database.Collection("AndroidMemoryMonitoring")
+	collection := database.Collection("AndroidErrorLogMonitoring")
 
 	log.Println("Setting up the Change Stream...")
 	pipeline := mongo.Pipeline{}

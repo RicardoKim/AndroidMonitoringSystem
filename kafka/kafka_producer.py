@@ -1,52 +1,33 @@
-#1. adb로 프로세스 정보를 읽는다
-#2. process 정보 관련 토픽을 생성한다.
-#3. 토픽에 adb로 읽은 정보를 보내게 된다.
+from kafka import KafkaProducer
+from json import dumps
 import subprocess
 import re
 import threading
+from datetime import datetime
 
-from kafka import KafkaProducer
-from json import dumps
-
-producer = KafkaProducer(
-    acks = 0,
-    api_version = (0,11,5),
-    client_id = 'test',
-    compression_type = 'gzip',
+# Create a single producer for system resource info
+resource_producer = KafkaProducer(
+    acks=0,
+    api_version=(0, 11, 5),
+    client_id='Android_System_Resource',
+    compression_type='gzip',
     bootstrap_servers=['localhost:29092'],
-    key_serializer = None,
-    value_serializer = lambda x: dumps(x).encode('utf-8')
+    key_serializer=None,
+    value_serializer=lambda x: dumps(x).encode('utf-8')
 )
 
-process_producer = KafkaProducer(
-    acks = 0,
-    api_version = (0,11,5),
-    client_id = 'Android_Process',
-    compression_type = 'gzip',
-    bootstrap_servers=['localhost:29092'],
-    key_serializer = None,
-    value_serializer = lambda x: dumps(x).encode('utf-8')
-)
-
-mem_producer = KafkaProducer(
-    acks = 0,
-    api_version = (0,11,5),
-    client_id = 'Android_Mem',
-    compression_type = 'gzip',
-    bootstrap_servers=['localhost:29092'],
-    key_serializer = None,
-    value_serializer = lambda x: dumps(x).encode('utf-8')
-)
-
+# Keep the existing producer for error logs
 error_logcat_producer = KafkaProducer(
-    acks = 0,
-    api_version = (0,11,5),
-    client_id = 'Android_Error_Log',
-    compression_type = 'gzip',
+    acks=0,
+    api_version=(0, 11, 5),
+    client_id='Android_Error_Log',
+    compression_type='gzip',
     bootstrap_servers=['localhost:29092'],
-    key_serializer = None,
-    value_serializer = lambda x: dumps(x).encode('utf-8')
+    key_serializer=None,
+    value_serializer=lambda x: dumps(x).encode('utf-8')
 )
+
+package_name_list = []
 
 def parse_android_process_info(output_str):
     # 각 상태에 대한 정규 표현식 패턴을 정의합니다.
@@ -89,43 +70,71 @@ def parse_memory_line(log):
         }
     return 
 
-def extract_top():
-    print("Extract Top Begin")
+def extract_resource_info():
+    print("Extract Resource Info Begin")
+    cpu_command = "adb shell dumpsys cpuinfo | grep 'TOTAL'"
+    battery_command = "adb shell dumpsys battery | grep level"
     adb_process = subprocess.Popen(['adb', 'shell', 'top', '-m', '20'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    
     while True:
+
+       
         log = adb_process.stdout.readline().decode().strip()
-        if "Task" in log :
-            parsed_data = parse_android_process_info(log)
-            process_producer.send(
-                'Android_Process', 
-                value=parsed_data
-                )
-        elif "Mem" in log:
-            parsed_data = parse_memory_line(log)
-            if parsed_data:
-                mem_producer.send(
-                    'Android_Memory',
-                    value = parsed_data
-                )
+        if "Mem" in log:
+            memory_info = parse_memory_line(log)
+            now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+            # Collect CPU info
+            
+            cpu_usage_line = subprocess.check_output(cpu_command, shell=True).decode('utf-8').split('\n')[0]
+            cpu_usage = cpu_usage_line.split('%')[0].strip()
+            # Collect Battery info
+            
+            battery_result = subprocess.run(battery_command, shell=True, text=True, capture_output=True).stdout.strip()
+            battery_level = battery_result.split(":")[1].strip()
+            
+            # Bundle all info into a single JSON and send to producer
+            resource_info = {
+                'created_at': now,
+                'memory_info': memory_info,
+                'cpu_usage': cpu_usage,
+                'battery_level': battery_level
+            }
+
+            print(resource_info)
+            resource_producer.send('Android_System_Resource', value=resource_info)
+    return
+
 
 def extract_error_logcat():
     print('Extract Error Log Begin')
-    adb_process = subprocess.Popen(['adb', 'logcat', '*:E'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    adb_process = subprocess.Popen(['adb', 'logcat', '*:E'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     while True:
-        log = adb_process.stdout.readline().decode().strip()
-        error_logcat_producer.send(
-            'Android_Error_Log',
-            value = log
-        )
+        line = adb_process.stdout.readline()
+        if any(pkg_name in line for pkg_name in package_name_list):
+            error_logcat_producer.send(
+                'Android_Error_Log',
+                value = line
+            )
+    return
+
 
 if __name__ == "__main__":
-    try:
-        top_thread = threading.Thread(target=extract_top)
-        error_logcat_thread = threading.Thread(target=extract_error_logcat)
-        error_logcat_thread.start()
-        top_thread.start()
-    except:
-        top_thread.join()
-        error_logcat_thread.join()
+    package_process = subprocess.Popen(['adb', 'shell', 'pm', 'list', 'packages', '--user', '0'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
+    stdout, stderr = package_process.communicate()
+    output = stdout.decode('utf-8')
+
+    packages = re.findall(r'package:([\w\.-]+)', output)
+
+    package_name_list.extend(packages)
+    
+    try:
+        resource_info_thread = threading.Thread(target=extract_resource_info)
+        error_logcat_thread = threading.Thread(target=extract_error_logcat)
+        resource_info_thread.start()
+        error_logcat_thread.start()
+    except:
+        resource_info_thread.join()
+        error_logcat_thread.join()
     

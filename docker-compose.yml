@@ -68,8 +68,7 @@ services:
     command: >
       bash -c "
         pip install pymongo &&
-        spark-submit --executor-cores 4 --executor-memory 1g --num-executors 1 --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.4.1 --master local[2] /opt/spark-script/spark_process_consumer.py &
-        spark-submit --executor-cores 4 --executor-memory 1g --num-executors 1 --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.4.1 --master local[2] /opt/spark-script/spark_memory_consumer.py
+        spark-submit --executor-cores 4 --executor-memory 1g --num-executors 1 --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.4.1 --master local[2] /opt/spark-script/spark_system_resource_consumer.py
       "
     networks:
       - app_network
