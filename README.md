@@ -18,7 +18,6 @@
 ![프로토타입2](https://github.com/RicardoKim/AndroidMonitoringSystem/assets/49342604/21ad3d78-c936-4376-88af-15ee447060ed)
 
 
-## Todo
-- [x] cpu, ram 등 resource 관련 정보 받아오기
-- [ ] Log 정보로 에러가 나는 앱 정보 받아오기
-- [ ] Log 정보로 현재 구동되는 앱 정보 받아오기
+## 3차 프로토 타입
+- 안드로이드 기기의 Resource 정보를 시간과 함께 받아오도록 처리
+![프로토타입3](./docs/3차_프로토타입.png)
